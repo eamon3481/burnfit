@@ -1,4 +1,4 @@
-package com.client.newarchitecture;
+package com.burnfit.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.client.BuildConfig;
-import com.client.newarchitecture.components.MainComponentsRegistry;
-import com.client.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.burnfit.BuildConfig;
+import com.burnfit.newarchitecture.components.MainComponentsRegistry;
+import com.burnfit.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
