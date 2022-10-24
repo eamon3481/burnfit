@@ -1,6 +1,6 @@
 export const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-export type Day = { id: string; day: number } | null;
+export type Day = { id: string; day: number; isCurrentMonth: boolean };
 
 export const getMonthDays = (year: number, month: number): Day[][] => {
   const days = [];
@@ -8,15 +8,17 @@ export const getMonthDays = (year: number, month: number): Day[][] => {
   current.setFullYear(year);
   current.setMonth(month - 1);
   current.setDate(1);
-  while (current.getMonth() + 1 === month) {
-    const week = DAYS.map((_, dayIndex) => {
-      if (current.getDay() !== dayIndex || current.getMonth() + 1 !== month) {
-        return null;
-      }
+
+  const _day = current.getDay();
+  console.log(_day);
+  current.setDate(_day * -1 + 1);
+
+  while (current.getMonth() < month) {
+    const week = DAYS.map(() => {
       const day = current.getDate();
       const id = formatDate(current);
       current.setDate(current.getDate() + 1);
-      return { id, day };
+      return { id, day, isCurrentMonth: current.getMonth() + 1 === month };
     });
 
     days.push(week);

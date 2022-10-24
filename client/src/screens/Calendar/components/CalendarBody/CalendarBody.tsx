@@ -1,19 +1,10 @@
-import { Text } from 'react-native';
 import React from 'react';
-import * as S from './CalendarBody.style';
-import { Day, DAYS } from '../../../../utils';
+import { Day } from '../../../../utils';
 import CalendarWeek from '../CalendarWeek/CalendarWeek';
 
 const CalendarBody = ({ days }: CalendarBodyProps) => {
   return (
     <>
-      <S.WeekList>
-        {DAYS.map(day => (
-          <S.Day key={day}>
-            <Text>{day}</Text>
-          </S.Day>
-        ))}
-      </S.WeekList>
       {days.map((week, idx) => (
         <CalendarWeek key={idx} week={week} />
       ))}
@@ -23,4 +14,4 @@ const CalendarBody = ({ days }: CalendarBodyProps) => {
 
 export default React.memo(CalendarBody);
 
-type CalendarBodyProps = { days: (Day | null)[][] };
+type CalendarBodyProps = { days: Day[][] };

@@ -1,4 +1,5 @@
 import React, { useRef, useState, createContext } from 'react';
+import { formatDate } from '../../../../utils';
 
 const CalendarContext = createContext<string | null>(null);
 const UpdateCalendarContext = createContext<((prev: string) => void) | null>(
@@ -27,9 +28,12 @@ const useUpdateCalendarContext = () => {
 
 const CalendarContextProvider: React.FC<{
   children: React.ReactNode;
-  initialDate: string;
+  initialDate: Date;
 }> = props => {
-  const [selectedDay, setSelectedDay] = useState<string>(props.initialDate);
+  const [selectedDay, setSelectedDay] = useState<string>(
+    formatDate(props.initialDate),
+  );
+  //   const [] = useState<number>(getWeek(props.initialDate));
   const setSelectedDayRef = useRef(setSelectedDay).current;
 
   return (

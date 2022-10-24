@@ -1,4 +1,4 @@
-import { Text, TouchableWithoutFeedback } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native';
 import React, { useCallback } from 'react';
 import * as S from './CalendarDay.style';
 import { Day } from '../../../../utils';
@@ -12,27 +12,22 @@ const CalendarDay = ({ day }: { day: Day }) => {
   const setSelectedDay = useUpdateCalendarContext();
 
   const handlePress = useCallback(() => {
-    console.log('day');
-    if (!day) {
+    if (!day.isCurrentMonth) {
       return;
     }
 
     setSelectedDay(day.id);
   }, [day]);
 
-  if (!day) {
-    return <S.Day />;
-  }
-
   return (
     <S.Day>
       <TouchableWithoutFeedback onPress={handlePress}>
         {day.id === selectedDay ? (
           <S.SelectedDayWrapper>
-            <Text>{day.day}</Text>
+            <S.DayText disabled={!day.isCurrentMonth}>{day.day}</S.DayText>
           </S.SelectedDayWrapper>
         ) : (
-          <Text>{day.day}</Text>
+          <S.DayText disabled={!day.isCurrentMonth}>{day.day}</S.DayText>
         )}
       </TouchableWithoutFeedback>
     </S.Day>
