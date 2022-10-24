@@ -5,7 +5,7 @@ import Calendar from '../screens/Calendar';
 import Home from '../screens/Home';
 import Library from '../screens/Library';
 import MyPage from '../screens/MyPage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
 const TabNavigation: React.FC = () => {
@@ -17,7 +17,7 @@ const TabNavigation: React.FC = () => {
           component={Home}
           options={{
             headerShown: false,
-            tabBarIcon: () => <Ionicons size={24} name="home" />,
+            tabBarIcon: () => <IonIcons size={24} name="home" />,
           }}
         />
         <Tab.Screen
@@ -25,7 +25,7 @@ const TabNavigation: React.FC = () => {
           component={Calendar}
           options={{
             headerShown: false,
-            tabBarIcon: () => <Ionicons size={24} name="calendar" />,
+            tabBarIcon: () => <IonIcons size={24} name="calendar" />,
           }}
         />
         <Tab.Screen
@@ -33,7 +33,7 @@ const TabNavigation: React.FC = () => {
           component={Library}
           options={{
             headerShown: false,
-            tabBarIcon: () => <Ionicons size={24} name="library" />,
+            tabBarIcon: () => <IonIcons size={24} name="library" />,
           }}
         />
         <Tab.Screen
@@ -41,7 +41,7 @@ const TabNavigation: React.FC = () => {
           component={MyPage}
           options={{
             headerShown: false,
-            tabBarIcon: () => <Ionicons size={24} name="people" />,
+            tabBarIcon: () => <IonIcons size={24} name="people" />,
           }}
         />
       </Tab.Navigator>

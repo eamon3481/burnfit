@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import React from 'react';
-
+import * as S from '../templates/TabScreen.style';
 const Home = () => {
   return (
-    <View style={{ width: 100 }}>
+    <S.ScreenTemplate>
       <Text>Home</Text>
-    </View>
+    </S.ScreenTemplate>
   );
 };
 

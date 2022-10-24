@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
+import * as S from '../templates/TabScreen.style';
 
 const Library: React.FC = () => {
   return (
-    <View>
+    <S.ScreenTemplate>
       <Text>Library</Text>
-    </View>
+    </S.ScreenTemplate>
   );
 };
 

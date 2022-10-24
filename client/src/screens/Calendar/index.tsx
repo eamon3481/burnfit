@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-
+import { Text } from 'react-native';
+import * as S from '../templates/TabScreen.style';
 const Calendar = () => {
   return (
-    <View>
+    <S.ScreenTemplate>
       <Text>Calendar</Text>
-    </View>
+    </S.ScreenTemplate>
   );
 };
 
