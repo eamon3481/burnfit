@@ -1,6 +1,8 @@
 export const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-export const getMonthDays = (year: number, month: number) => {
+export type Day = { id: string; day: number } | null;
+
+export const getMonthDays = (year: number, month: number): Day[][] => {
   const days = [];
   const current = new Date();
   current.setFullYear(year);
