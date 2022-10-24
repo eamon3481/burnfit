@@ -14,8 +14,8 @@ const CalendarBody = ({ days }: CalendarBodyProps) => {
           </S.Day>
         ))}
       </S.WeekList>
-      {days.map(week => (
-        <CalendarWeek week={week} />
+      {days.map((week, idx) => (
+        <CalendarWeek key={idx} week={week} />
       ))}
     </>
   );
