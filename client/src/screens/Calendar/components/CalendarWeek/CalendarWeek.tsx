@@ -6,9 +6,9 @@ import * as S from './CalendarWeek.style';
 const CalendarWeek = ({ week }: CalendarWeekProps) => {
   return (
     <S.WeekList>
-      {week.map(day => (
-        <CalendarDay key={day.id} day={day} />
-      ))}
+      {week &&
+        week.length > 0 &&
+        week.map(day => <CalendarDay key={day.id} day={day} />)}
     </S.WeekList>
   );
 };

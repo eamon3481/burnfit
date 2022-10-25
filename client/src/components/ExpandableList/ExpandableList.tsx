@@ -1,5 +1,5 @@
 import { Button, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Animated from 'react-native-reanimated';
 import CalendarBody from '../../screens/Calendar/components/CalendarBody/CalendarBody';
 import CalendarWeek from '../../screens/Calendar/components/CalendarWeek/CalendarWeek';
@@ -18,15 +18,41 @@ const ExpandableList = React.memo((props: ExpandableListProps) => {
   const [expanded, setExpanded] = useState(true);
 
   current.setDate(1);
-  const { days, year, month, handleNextBtn, handlePrevBtn, week } =
+  const { days, year, month, handleNextBtn, handlePrevBtn, week, setWeek } =
     useCalendar(current);
+
+  const handleVerticalScroll = (direction: 'up' | 'down') => {
+    setWeek(0);
+    if (direction === 'up') {
+      setExpanded(false);
+      return;
+    }
+    setExpanded(true);
+  };
+
+  const handleHorizontalScroll = useCallback(
+    (direction: 'right' | 'left') => {
+      if (direction === 'right') {
+        handleNextBtn(!expanded)();
+        return;
+      }
+      handlePrevBtn(!expanded)();
+    },
+    [expanded],
+  );
 
   const {
     onPanGestureEvent,
     topAnimationStyle,
     hightAnimationStyle,
     isWeekCalendar,
-  } = useExpandableAnimation(expanded, setExpanded, itemHeight, days.length);
+  } = useExpandableAnimation({
+    expanded,
+    itemHeight,
+    itemsCnt: days.length,
+    handleVerticalScroll,
+    handleHorizontalScroll,
+  });
 
   return (
     <>
@@ -34,6 +60,7 @@ const ExpandableList = React.memo((props: ExpandableListProps) => {
         title={'접기'}
         onPress={() => {
           setExpanded(prev => !prev);
+          setWeek(0);
         }}
       />
       <CalendarHeader

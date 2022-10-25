@@ -9,12 +9,23 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 
-const useExpandableAnimation = (
-  expanded: boolean,
-  setExpanded: (prev: boolean) => void,
-  itemHeight: number,
-  itemsCnt: number,
-) => {
+type ExpandableAnimationProps = {
+  expanded: boolean;
+  handleVerticalScroll: (direction: 'up' | 'down') => void;
+  handleHorizontalScroll: (direction: 'right' | 'left') => void;
+  itemHeight: number;
+  itemsCnt: number;
+  duration?: number;
+};
+
+const useExpandableAnimation = ({
+  expanded,
+  itemHeight,
+  itemsCnt,
+  duration = 1000,
+  handleVerticalScroll,
+  handleHorizontalScroll,
+}: ExpandableAnimationProps) => {
   const [isWeekCalendar, setIsWeekCalendar] = useState(false);
 
   const listHeight = getListHeight({
@@ -22,20 +33,11 @@ const useExpandableAnimation = (
     itemsCnt,
   });
 
-  const duration = 1000;
   const height = useSharedValue(listHeight);
   const top = useSharedValue(0);
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-
-  const handleFold = () => {
-    setExpanded(false);
-  };
-
-  const handleExpand = () => {
-    setExpanded(true);
-  };
 
   const hightAnimationStyle = useAnimatedStyle(() => {
     return {
@@ -81,11 +83,27 @@ const useExpandableAnimation = (
       },
 
       onEnd: event => {
-        if (translateY.value - event.translationY > 0) {
-          runOnJS(handleFold)();
+        const relativeY = translateY.value - event.translationY;
+        const relativeX = translateX.value + event.translationX;
+
+        if (Math.abs(relativeY) > Math.abs(relativeX)) {
+          if (relativeY > 0) {
+            runOnJS(handleVerticalScroll)('up');
+            return;
+          }
+          if (relativeY < 0) {
+            runOnJS(handleVerticalScroll)('down');
+            return;
+          }
         }
-        if (translateY.value - event.translationY < 0) {
-          runOnJS(handleExpand)();
+
+        if (relativeY > 0) {
+          runOnJS(handleHorizontalScroll)('right');
+          return;
+        }
+        if (relativeY < 0) {
+          runOnJS(handleHorizontalScroll)('left');
+          return;
         }
       },
     });

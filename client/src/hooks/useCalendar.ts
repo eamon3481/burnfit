@@ -42,35 +42,28 @@ const useCalendar = (initialDay: Date) => {
     });
   }, []);
 
-  const handleNextBtn = useCallback(
-    (isWeekCalendar: boolean) => () => {
-      if (isWeekCalendar) {
-        onNextWeek();
-        return;
-      }
-      setWeek(0);
-      onNextMonth();
-    },
-    [],
-  );
+  const handleNextBtn = (isWeekCalendar: boolean) => () => {
+    if (isWeekCalendar) {
+      onNextWeek();
+      return;
+    }
+    onNextMonth();
+  };
 
-  const handlePrevBtn = useCallback(
-    (isWeekCalendar: boolean) => () => {
-      if (isWeekCalendar) {
-        onPrevWeek();
-        return;
-      }
-      setWeek(0);
-      onPrevMonth();
-    },
-    [],
-  );
+  const handlePrevBtn = (isWeekCalendar: boolean) => () => {
+    if (isWeekCalendar) {
+      onPrevWeek();
+      return;
+    }
+    onPrevMonth();
+  };
 
   return {
     days,
     year,
     month,
     week,
+    setWeek,
     handleNextBtn,
     handlePrevBtn,
   };
