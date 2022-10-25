@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import {
   Easing,
   runOnJS,
+  useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -9,6 +11,7 @@ import {
 
 const useExpandableAnimation = (
   expanded: boolean,
+  setExpanded: (prev: boolean) => void,
   itemHeight: number,
   itemsCnt: number,
 ) => {
@@ -19,9 +22,20 @@ const useExpandableAnimation = (
     itemsCnt,
   });
 
-  const duration = 2000;
+  const duration = 1000;
   const height = useSharedValue(listHeight);
   const top = useSharedValue(0);
+
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+
+  const handleFold = () => {
+    setExpanded(false);
+  };
+
+  const handleExpand = () => {
+    setExpanded(true);
+  };
 
   const hightAnimationStyle = useAnimatedStyle(() => {
     return {
@@ -59,10 +73,28 @@ const useExpandableAnimation = (
     });
   }, [expanded]);
 
+  const onPanGestureEvent =
+    useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
+      onStart: event => {
+        translateX.value = event.translationX;
+        translateY.value = event.translationY;
+      },
+
+      onEnd: event => {
+        if (translateY.value - event.translationY > 0) {
+          runOnJS(handleFold)();
+        }
+        if (translateY.value - event.translationY < 0) {
+          runOnJS(handleExpand)();
+        }
+      },
+    });
+
   return {
     isWeekCalendar,
     hightAnimationStyle,
     topAnimationStyle,
+    onPanGestureEvent,
   };
 };
 

@@ -1,7 +1,32 @@
 import { useCallback, useState } from 'react';
+import { getBeforeMonthDaysLength, getMonthDays } from '../utils';
 
 const useCalendar = (initialDay: Date) => {
   const [date, setDate] = useState<Date>(initialDay);
+  const [week, setWeek] = useState(0);
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const days = getMonthDays(date.getMonth(), date.getMonth());
+  const prevItemsCnt = getBeforeMonthDaysLength(year, month);
+
+  const onNextWeek = useCallback(() => {
+    if (week === days.length - 1) {
+      setWeek(0);
+      onNextMonth();
+      return;
+    }
+    setWeek(prev => ++prev);
+  }, [week]);
+
+  const onPrevWeek = useCallback(() => {
+    if (week === 0) {
+      onPrevMonth();
+      setWeek(prevItemsCnt - 1);
+      return;
+    }
+    setWeek(prev => --prev);
+  }, [week]);
 
   const onNextMonth = useCallback(() => {
     setDate(prev => {
@@ -17,11 +42,37 @@ const useCalendar = (initialDay: Date) => {
     });
   }, []);
 
+  const handleNextBtn = useCallback(
+    (isWeekCalendar: boolean) => () => {
+      if (isWeekCalendar) {
+        onNextWeek();
+        return;
+      }
+      setWeek(0);
+      onNextMonth();
+    },
+    [],
+  );
+
+  const handlePrevBtn = useCallback(
+    (isWeekCalendar: boolean) => () => {
+      if (isWeekCalendar) {
+        onPrevWeek();
+        return;
+      }
+      setWeek(0);
+      onPrevMonth();
+    },
+    [],
+  );
+
   return {
-    year: date.getFullYear(),
-    month: date.getMonth(),
-    onNextMonth,
-    onPrevMonth,
+    days,
+    year,
+    month,
+    week,
+    handleNextBtn,
+    handlePrevBtn,
   };
 };
 
