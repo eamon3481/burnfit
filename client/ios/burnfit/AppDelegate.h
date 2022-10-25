@@ -1,3 +1,7 @@
+#if RCT_DEV
+#import <React/RCTDevLoadingView.h>
+#endif
+
 #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
 

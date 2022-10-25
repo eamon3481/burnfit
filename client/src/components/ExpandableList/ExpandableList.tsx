@@ -1,94 +1,84 @@
-import { ListRenderItemInfo, View } from 'react-native';
-import React, { useEffect } from 'react';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import { View } from 'react-native';
+import React, { useState } from 'react';
+import Animated from 'react-native-reanimated';
 import CalendarBody from '../../screens/Calendar/components/CalendarBody/CalendarBody';
-import { Day } from '../../utils';
+import { getBeforeMonthDaysLength, getMonthDays } from '../../utils';
+import CalendarWeek from '../../screens/Calendar/components/CalendarWeek/CalendarWeek';
+import useExpandableAnimation from '../../hooks/useExpandableAnimation';
+import useCalendar from '../../hooks/useCalendar';
+import CalendarHeader from '../../screens/Calendar/components/CalendarHeader/CalendarHeader';
 
-const AnimatedCircle = Animated.createAnimatedComponent(View);
+const AnimatedView = Animated.createAnimatedComponent(View);
 
-const ExpandableList = React.memo((props: ExpandableFlatListProps) => {
-  const { expanded, data = [], itemHeight = 0 } = props;
+const ExpandableList = React.memo((props: ExpandableListProps) => {
+  const { expanded, itemHeight = 0 } = props;
 
-  const listHeight = getListHeight({
-    itemHeight,
-    itemsCnt: data.length,
-  });
+  const current = new Date();
+  current.setDate(1);
+  const { onNextMonth, onPrevMonth, year, month } = useCalendar(current);
 
-  const duration = 2000;
-  const height = useSharedValue(listHeight);
-  const top = useSharedValue(0);
+  const days = getMonthDays(year, month);
+  const prevDaysLength = getBeforeMonthDaysLength(year, month);
 
-  const hightAnimationStyle = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-    };
-  });
+  const { topAnimationStyle, hightAnimationStyle, isWeekCalendar } =
+    useExpandableAnimation(expanded, itemHeight, days.length);
 
-  const topAnimationStyle = useAnimatedStyle(() => {
-    return {
-      top: top.value,
-    };
-  });
+  const [week, setWeek] = useState(0);
 
-  useEffect(() => {
-    height.value = withTiming(expanded ? listHeight : itemHeight, {
-      duration,
-      easing: Easing.bezier(0.1, 0.76, 0.5, 1),
-    });
-    top.value = withTiming(expanded ? 0 : -1 * itemHeight, {
-      duration,
-      easing: Easing.bezier(0.1, 0.76, 0.5, 1),
-    });
-  }, [expanded]);
+  const onNextWeek = () => {
+    if (week === days.length - 1) {
+      setWeek(0);
+      onNextMonth();
+      return;
+    }
+    setWeek(prev => ++prev);
+  };
+
+  const onPrevWeek = async () => {
+    if (week === 0) {
+      onPrevMonth();
+      setWeek(prevDaysLength - 1);
+      return;
+    }
+    setWeek(prev => --prev);
+  };
 
   return (
     <>
-      <AnimatedCircle
+      <CalendarHeader
+        handleNextBtn={expanded ? onNextMonth : onNextWeek}
+        handlePrevBtn={expanded ? onPrevMonth : onPrevWeek}
+        year={year}
+        month={month}
+      />
+      <AnimatedView
         style={[
           {
             position: 'relative',
-            width: '100%',
-            height: height.value,
             overflow: 'hidden',
           },
           hightAnimationStyle,
         ]}>
-        <AnimatedCircle
+        <AnimatedView
           style={[
             {
               position: 'absolute',
             },
             topAnimationStyle,
           ]}>
-          <CalendarBody days={data} />
-        </AnimatedCircle>
-      </AnimatedCircle>
+          {isWeekCalendar ? (
+            <CalendarBody days={days} />
+          ) : (
+            <CalendarWeek week={days[week]} />
+          )}
+        </AnimatedView>
+      </AnimatedView>
     </>
   );
 });
 export default React.memo(ExpandableList);
 
-type ExpandableFlatListProps = {
+type ExpandableListProps = {
   itemHeight: number;
   expanded: boolean;
-  data: Day[][];
-};
-
-export type ExpandableListRenderItem<T> = (
-  info: Omit<ListRenderItemInfo<T>, 'separators'>,
-) => React.ReactElement;
-
-export const getListHeight = ({
-  itemsCnt,
-  itemHeight,
-}: {
-  itemsCnt: number;
-  itemHeight: number;
-}) => {
-  return itemsCnt * itemHeight + 1;
 };
